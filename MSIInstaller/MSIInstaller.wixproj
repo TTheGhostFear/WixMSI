@@ -1,8 +1,26 @@
 ﻿<Project Sdk="WixToolset.Sdk/5.0.2">
+	<PropertyGroup >
+		<FilesPath>..\ConsoleApp1\files\</FilesPath>
+		<RunWixToolsOutOfProc>true</RunWixToolsOutOfProc>
+		<DefineConstants>FilesPathFolder=$(FilesPath)</DefineConstants>
+	</PropertyGroup>
   <ItemGroup>
     <PackageReference Include="WixToolset.Heat" Version="5.0.2" />
     <PackageReference Include="WixToolset.Iis.wixext" Version="5.0.2" />
     <PackageReference Include="WixToolset.Util.wixext" Version="5.0.2" />
     <PackageReference Include="WixToolset.VisualStudio.wixext" Version="5.0.2" />
   </ItemGroup>
+
+	<Target Name="CustomBeforeBuild" BeforeTargets="BeforeBuild">
+		<ItemGroup>
+			<HarvestDirectory Include="$(FilesPath)">
+				<DirectoryRefId>HARVESTED_FILES</DirectoryRefId>
+				<SuppressRootDirectory>true</SuppressRootDirectory>
+				<SuppressCom>true</SuppressCom>
+				<SuppressRegistry>true</SuppressRegistry>
+				<ComponentGroupName>HarvestedFileComponentGroups</ComponentGroupName>
+				<PreprocessorVariable>var.FilesPathFolder</PreprocessorVariable>
+			</HarvestDirectory>
+		</ItemGroup>
+	</Target>
 </Project>

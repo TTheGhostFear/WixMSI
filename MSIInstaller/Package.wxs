@@ -1,32 +1,30 @@
-﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:iis="http://wixtoolset.org/schemas/v4/iis">
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:iis="http://wixtoolset.org/schemas/v4/wxs/iis">
 	<Package Name="MSIInstaller" Manufacturer="TODO Manufacturer" Version="1.0.0.0" UpgradeCode="4023ae85-f57c-4c34-b272-20f57fc78d8f">
 		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
 
 		<Feature Id="Main">
 			<ComponentGroupRef Id="ExampleComponents" />
-			<ComponentRef Id="IISWebsiteComponent" />
+			<ComponentGroupRef Id="HarvestedFileComponentGroups"/>
 		</Feature>
 	</Package>
 
 	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="inetpub" Name="inetpub">
-				<Directory Id="wwwroot" Name="wwwroot">
-					<Directory Id="INSTALLFOLDER" Name="MyWebsite" />
+		<StandardDirectory Id="ProgramFilesFolder">
+
+			<!-- Create a folder inside program files -->
+			<Directory Id="ROOTDIRECTORY" Name="!(bind.Property.Manufacturer)">
+
+				<!-- Create a folder within the parent folder given the name -->
+				<Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)" >
+					<Directory Id="TEST_DIR"  Name="test dir">
+						<Directory Id="HARVESTED_FILES" Name="files"/>
+					</Directory>
 				</Directory>
+				
 			</Directory>
-		</Directory>
+		</StandardDirectory>
 	</Fragment>
 
-	<Fragment>
-		<Component Id="IISWebsiteComponent" Guid="{F3E1D74E-49DB-43A1-9940-342287982FBE}">
-			<iis:WebSite Id="MyWebsite" Description="My Website" Directory="INSTALLFOLDER">
-				<iis:WebAddress Id="AllUnassigned" Port="8080" />
-				<iis:WebApplication Id="MyWebApp" Name="MyWebApp" WebAppPool="DefaultAppPool" />
-			</iis:WebSite>
-			<CreateFolder />
-			<RemoveFolder Id="RemoveINSTALLFOLDER" On="uninstall" />
-			<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-		</Component>
-	</Fragment>
+
+	
 </Wix>
